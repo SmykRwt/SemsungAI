@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SlideSage - Upload</title>
+</head>
+<body>
+    <h1>SlideSage</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pptx,.pdf" required>
+        <button type="submit">Upload and Extract</button>
+    </form>
+
+    {% if simplified_text %}
+        <h2>📝 Simplified Text</h2>
+        <p>{{ simplified_text }}</p>
+    {% endif %}
+
+    {% if audio_url %}
+        <h3>Generated Audio</h3>
+        <audio controls>
+        <source src="{{ audio_url }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+        </audio>
+    {% endif %}
+
+
+
+
+
+</body>
+</html>
