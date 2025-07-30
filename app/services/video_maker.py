@@ -1,3 +1,6 @@
+import moviepy.config as mpy_config
+mpy_config.change_settings({"IMAGEMAGICK_BINARY": "C:\\Program Files\\ImageMagick-7.1.2-Q16-HDRI\\magick.exe"})  # Use your actual path
+
 from moviepy.editor import VideoFileClip, AudioFileClip, TextClip, CompositeVideoClip
 import os
 

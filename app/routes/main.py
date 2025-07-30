@@ -51,7 +51,7 @@ def index():
             final_video_path = None
             if audio_path and video_path:
                 final_video_path = combine_audio_with_video(
-                    audio_path, video_path, output_path="static/final_output/final_video.mp4"
+                    audio_path, video_path, output_path="static/final_output/final_video.mp4", subtitle_text=simplified_text    
                 )
 
             # Prepare URLs for frontend
