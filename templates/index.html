@@ -4,7 +4,7 @@
     <title>SlideSage - Upload</title>
 </head>
 <body>
-    <h1>SlideSage</h1>
+    <h1>📚 SlideSage</h1>
 
     <form method="POST" enctype="multipart/form-data">
         <input type="file" name="file" accept=".pptx,.pdf" required>
@@ -17,16 +17,20 @@
     {% endif %}
 
     {% if audio_url %}
-        <h3>Generated Audio</h3>
+        <h3>🔊 Generated Audio</h3>
         <audio controls>
-        <source src="{{ audio_url }}" type="audio/mpeg">
-        Your browser does not support the audio element.
+            <source src="{{ audio_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
         </audio>
     {% endif %}
 
-
-
-
+    {% if video_url %}
+        <h3>🎥 Final Narrated Video</h3>
+        <video width="640" height="360" controls>
+            <source src="{{ video_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    {% endif %}
 
 </body>
 </html>

@@ -29,3 +29,10 @@ def simplify_text(input_text):
 
     response = model.generate_content(prompt)
     return response.text.strip()
+
+def get_video_search_prompt(simplified_text):
+    prompt = f"Given the following simplified educational narration:\n\n{simplified_text}\n\nExtract a short and simple keyword or phrase (max 5 words) that represents the topic of the narration. This keyword should be used to search for a stock video background."
+    
+    gemini_response = model.generate_content(prompt)  # Replace `model` with your Gemini setup
+    return gemini_response.text.strip()
+

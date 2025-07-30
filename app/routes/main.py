@@ -2,11 +2,13 @@
 
 import os
 from flask import Blueprint, render_template, request, url_for
-from app.services.parser import extract_text_from_ppt
-from app.services.parser import extract_text_from_pdf
-from app.services.simplifier import simplify_text
-from app.services.tts import generate_voice
 from werkzeug.utils import secure_filename
+
+from app.services.parser import extract_text_from_ppt, extract_text_from_pdf
+from app.services.simplifier import simplify_text, get_video_search_prompt
+from app.services.tts import generate_voice
+from app.services.video_fetcher import download_relevant_video
+from app.services.video_maker import combine_audio_with_video
 
 main = Blueprint("main", __name__)
 
@@ -33,21 +35,36 @@ def index():
             else:
                 extracted_text = ""
 
+            # Step 1: Simplify text for narration
             simplified_text = simplify_text(extracted_text)
 
-            # Generate audio file from simplified text
-            audio_path = generate_voice(simplified_text)  # Full static/audio_output path
+            # Step 2: Generate voice narration
+            audio_path = generate_voice(simplified_text)  # e.g. static/audio_output/output.mp3
 
-            if audio_path:
-                relative_path = os.path.relpath(audio_path, "static").replace("\\", "/")
-                audio_url = url_for("static", filename=relative_path)
-            else:
-                audio_url = None
+            # Step 3: Extract keyword for stock video search
+            search_keyword = get_video_search_prompt(simplified_text)
+
+            # Step 4: Download background video from Pexels
+            video_path = download_relevant_video(search_keyword)  # e.g. assets/background.mp4
+
+            # Step 5: Combine audio and video
+            final_video_path = None
+            if audio_path and video_path:
+                final_video_path = combine_audio_with_video(
+                    audio_path, video_path, output_path="static/final_output/final_video.mp4"
+                )
+
+            # Prepare URLs for frontend
+            audio_url = url_for("static", filename=os.path.relpath(audio_path, "static").replace("\\", "/")) if audio_path else None
+            video_url = url_for("static", filename=os.path.relpath(final_video_path, "static").replace("\\", "/")) if final_video_path else None
+
 
             return render_template(
                 "index.html",
                 simplified_text=simplified_text,
-                audio_url=audio_url
+                audio_url=audio_url,
+                video_url=video_url,
+                subtitle_text=simplified_text
             )
 
-    return render_template("index.html", simplified_text=None, audio_url=None)
+    return render_template("index.html", simplified_text=None, audio_url=None, video_url=None)
